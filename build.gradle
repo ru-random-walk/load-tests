@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'io.gatling.gradle' version '3.14.3'
+}
+
+repositories {
+    mavenCentral()
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+dependencies {
+    gatling 'io.gatling:gatling-test-framework:3.14.3'
+    gatling 'io.gatling.highcharts:gatling-charts-highcharts:3.14.3'
+    gatling 'io.gatling:gatling-core-java:3.14.3'
+    gatlingImplementation 'org.springframework.boot:spring-boot-starter-websocket:2.7.5'
+}
+
+test {
+    useJUnitPlatform()
+}
