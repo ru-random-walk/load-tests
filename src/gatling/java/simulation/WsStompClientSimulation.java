@@ -6,11 +6,11 @@ import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 import websocket.WebsocketApi;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
-import static io.gatling.javaapi.core.CoreDsl.atOnceUsers;
 import static io.gatling.javaapi.http.HttpDsl.http;
 
 public class WsStompClientSimulation extends Simulation {
@@ -53,6 +53,16 @@ public class WsStompClientSimulation extends Simulation {
 
 
     {
-        setUp(scn.injectOpen(constantUsersPerSec(2).during(5)).protocols(httpProtocol));
+        setUp(
+                scn.injectOpen(
+                        rampUsersPerSec(1).to(100).during(Duration.ofMinutes(1))
+                )
+        ).protocols(httpProtocol)
+                .maxDuration(Duration.ofMinutes(5))
+                .assertions(
+                        global().successfulRequests().percent().gt(99.0),
+                        global().responseTime().mean().lt(3000),
+                        forAll().failedRequests().count().lt(10L)
+                );
     }
 }
